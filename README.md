@@ -1,5 +1,7 @@
 # efp
 
+![Project Build Status](https://travis-ci.com/praveentiru/efp.svg?branch=master)
+
 There are lot of people who use excel in their day to day operations. They are well versed with excel formulas. Having support for excel formulas in a software system would be of great value of end users. Some target groups:
 
 * Project Managers
