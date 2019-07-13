@@ -27,6 +27,12 @@ Text Functions
 * FIND
 * FIXED - *Todo*
 * LEFT
+* LEN
+* LOWER
+* MID
+* PROPER
+* REPLACE
+* REPT
 
 ## Approach
 

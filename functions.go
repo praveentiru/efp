@@ -19,6 +19,8 @@ import (
 	"reflect"
 	"strconv"
 	"strings"
+	"text/scanner"
+	"unicode"
 )
 
 // Concat implement Excel's CONCAT function
@@ -62,4 +64,88 @@ func Left(s string, l int) string {
 		l = len(s)
 	}
 	return s[:l]
+}
+
+// Len implements Excel's LEN function
+func Len(s string) int {
+	return len(s)
+}
+
+// Lower implements Excel's LOWER function
+func Lower(s string) string {
+	return strings.ToLower(s)
+}
+
+// Mid implements Excel's MID function
+func Mid(s string, strt, num int) string {
+	l := len(s)
+	if strt > l || strt < 1 || num < 0 {
+		return ""
+	}
+	if strt+num > l {
+		return s[strt-1:]
+	}
+	return s[strt-1 : strt-1+num]
+}
+
+// Proper implements Excel's PROPER function
+func Proper(s string) string {
+	type scanState int
+	const (
+		inString scanState = iota
+		outString
+	)
+	var sb strings.Builder
+	var sc scanner.Scanner
+	currState := outString
+	sc.Init(strings.NewReader(s))
+	for rn := sc.Next(); rn != scanner.EOF; rn = sc.Next() {
+		if unicode.IsLetter(rn) {
+			switch currState {
+			case inString:
+				sb.WriteRune(unicode.ToLower(rn))
+			case outString:
+				currState = inString
+				sb.WriteRune(unicode.ToUpper(rn))
+			}
+		} else {
+			if currState == inString {
+				currState = outString
+			}
+			sb.WriteRune(rn)
+		}
+	}
+	return sb.String()
+}
+
+// Replace implements Excel's REPLACE function
+func Replace(old string, strt, num int, newStr string) string {
+	strt = strt - 1
+	l := len(old)
+	fmt.Println(l, strt, num, strt+num)
+	if strt+num > l {
+		num = l - strt
+		if strt > l {
+			strt = l
+			num = 0
+		}
+	}
+	fmt.Println(l, strt, num, strt+num)
+	left := old[:strt]
+	right := old[strt+num:]
+	var sb strings.Builder
+	sb.WriteString(left)
+	sb.WriteString(newStr)
+	sb.WriteString(right)
+	fmt.Println(sb.String())
+	return sb.String()
+}
+
+// Rept implements Excel's REPT function
+func Rept(s string, r int) string {
+	var sb strings.Builder
+	for i := 0; i < r; i++ {
+		sb.WriteString(s)
+	}
+	return sb.String()
 }
