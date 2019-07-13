@@ -138,7 +138,6 @@ func Replace(old string, strt, num int, newStr string) string {
 	sb.WriteString(left)
 	sb.WriteString(newStr)
 	sb.WriteString(right)
-	fmt.Println(sb.String())
 	return sb.String()
 }
 
