@@ -10,8 +10,6 @@ There are lot of people who use excel in their day to day operations. They are w
 ## Roadmap
 
 1. Drop 1:
-    * Lexer for excel formulas
-    * Parser for orchestrating lexer
     * Support for all Logical functions
     * Support for all text functions
 2. Drop 2:
@@ -19,9 +17,20 @@ There are lot of people who use excel in their day to day operations. They are w
     * Support for Math & Trig with exception of array functions
     * Support for Date & Time functions
 
+## Excel functions supported
+
+Text Functions
+
+* CONCAT
+* CONCATENATE
+* EXACT
+* FIND
+* FIXED - *Todo*
+* LEFT
+
 ## Approach
 
-The intent is to leverage golang approach in parsing text templates. You can find a great talk by Rob Pike here -> [YouTube](https://youtu.be/HxaD_trXwRE)
+Use [gval](https://github.com/PaesslerAG/gval) to implement Excel formula language
 
 ## How to install
 
