@@ -7,6 +7,10 @@ There are lot of people who use excel in their day to day operations. They are w
 * BOM Managers
 * Finance Managers
 
+## Pre-requisites
+
+Go version - 1.12 and above
+
 ## Roadmap
 
 1. Drop 1:
