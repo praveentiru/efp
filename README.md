@@ -33,6 +33,11 @@ Text Functions
 * PROPER
 * REPLACE
 * REPT
+* RIGHT
+* SEARCH
+* SUBSTITUTE
+* TRIM
+* UPPER
 
 ## Approach
 

@@ -50,6 +50,9 @@ func Exact(a string, b string) bool {
 // Find implements Excel's FIND function
 // Deviation: pos is mandatory input
 func Find(f, w string, pos int) int {
+	if pos > len(w) {
+		return -1
+	}
 	r := strings.Index(w[pos-1:], f)
 	if r == -1 {
 		return r
@@ -122,7 +125,6 @@ func Proper(s string) string {
 func Replace(old string, strt, num int, newStr string) string {
 	strt = strt - 1
 	l := len(old)
-	fmt.Println(l, strt, num, strt+num)
 	if strt+num > l {
 		num = l - strt
 		if strt > l {
@@ -130,7 +132,6 @@ func Replace(old string, strt, num int, newStr string) string {
 			num = 0
 		}
 	}
-	fmt.Println(l, strt, num, strt+num)
 	left := old[:strt]
 	right := old[strt+num:]
 	var sb strings.Builder
@@ -148,4 +149,69 @@ func Rept(s string, r int) string {
 		sb.WriteString(s)
 	}
 	return sb.String()
+}
+
+// Right implements Excel's RIGHT function
+func Right(s string, num int) string {
+	if num <= 0 {
+		return ""
+	}
+	l := len(s)
+	if num > l {
+		return s
+	}
+	return s[l-num:]
+}
+
+// Search implements Excel's SEARCH function
+// Deviation: pos parameter is mandatory in GO
+func Search(fnd, in string, pos int) int {
+	fnd = strings.ToLower(fnd)
+	in = strings.ToLower(in)
+	return Find(fnd, in, pos)
+}
+
+// Substitute implements Excel's SUBSTITUTE function
+// Deviation: Instance number is mandatory and if all instances need to be substituted provide 0
+func Substitute(src, old, new string, inst int) string {
+	if inst > 0 {
+		substrA := strings.Split(src, old)
+		var sb strings.Builder
+		for i, val := range substrA {
+			if i > 0 {
+				switch i {
+				case inst:
+					sb.WriteString(new)
+				default:
+					sb.WriteString(old)
+				}
+			}
+			sb.WriteString(val)
+		}
+		return sb.String()
+	}
+	return strings.ReplaceAll(src, old, new)
+}
+
+// Trim implements Excel's TRIM function
+func Trim(s string) string {
+	s = strings.TrimSpace(s)
+	type scanState int
+	const (
+		inSpace scanState = iota
+		outSpace
+	)
+	var sc scanner.Scanner
+	var sb strings.Builder
+	sc.Init(strings.NewReader(s))
+	for tok := sc.Scan(); tok != scanner.EOF; tok = sc.Scan() {
+		str := fmt.Sprint(sc.TokenText(), " ")
+		sb.WriteString(str)
+	}
+	return strings.TrimSpace(sb.String())
+}
+
+// Upper implements Excel's UPPER function
+func Upper(s string) string {
+	return strings.ToUpper(s)
 }

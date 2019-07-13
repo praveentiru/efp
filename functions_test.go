@@ -29,7 +29,7 @@ func TestConcat(t *testing.T) {
 		}
 	}
 	if errCnt > 0 {
-		t.Errorf("Failed %v cases", errCnt)
+		t.Errorf("Failed %v of %v test cases", errCnt, len(tt))
 	}
 }
 
@@ -52,7 +52,7 @@ func TestExact(t *testing.T) {
 		}
 	}
 	if errCnt > 0 {
-		t.Errorf("Failed %v cases", errCnt)
+		t.Errorf("Failed %v of %v test cases", errCnt, len(tt))
 	}
 }
 
@@ -70,6 +70,7 @@ func TestFind(t *testing.T) {
 		{"Sub-String Not Found", "GHI", "ABCDEFGH", 1, -1},
 		{"String found in starting pos", "CDE", "ABCDEFGH", 3, 3},
 		{"String not found in starting pos", "CDE", "ABCDEFGH", 4, -1},
+		{"String not found in starting pos", "CDE", "ABCDEFGH", 11, -1},
 	}
 	var errCnt int
 	for _, tu := range tt {
@@ -80,7 +81,7 @@ func TestFind(t *testing.T) {
 		}
 	}
 	if errCnt > 0 {
-		t.Errorf("Failed %v test cases", errCnt)
+		t.Errorf("Failed %v of %v test cases", errCnt, len(tt))
 	}
 }
 
@@ -104,7 +105,7 @@ func TestLeft(t *testing.T) {
 		}
 	}
 	if errCnt > 0 {
-		t.Errorf("Failed %v cases", errCnt)
+		t.Errorf("Failed %v of %v test cases", errCnt, len(tt))
 	}
 }
 
@@ -127,7 +128,7 @@ func TestLen(t *testing.T) {
 		}
 	}
 	if errCnt > 0 {
-		t.Errorf("Failed %v cases", errCnt)
+		t.Errorf("Failed %v of %v test cases", errCnt, len(tt))
 	}
 }
 
@@ -150,7 +151,7 @@ func TestLower(t *testing.T) {
 		}
 	}
 	if errCnt > 0 {
-		t.Errorf("Failed %v cases", errCnt)
+		t.Errorf("Failed %v of %v test cases", errCnt, len(tt))
 	}
 }
 
@@ -177,7 +178,7 @@ func TestMid(t *testing.T) {
 		}
 	}
 	if errCnt > 0 {
-		t.Errorf("Failed %v cases", errCnt)
+		t.Errorf("Failed %v of %v test cases", errCnt, len(tt))
 	}
 }
 
@@ -201,7 +202,7 @@ func TestProper(t *testing.T) {
 		}
 	}
 	if errCnt > 0 {
-		t.Errorf("Failed %v cases", errCnt)
+		t.Errorf("Failed %v of %v test cases", errCnt, len(tt))
 	}
 }
 
@@ -217,6 +218,7 @@ func TestReplace(t *testing.T) {
 		{"Happy case 1", "Hello World", 3, 6, "India", "HeIndiarld"},
 		{"Happy case 2", "Hello World", 7, 5, "India", "Hello India"},
 		{"Start position larger than length", "Hello World", 12, 5, " and India", "Hello World and India"},
+		{"Start position larger than length", "Hello World", 17, 5, " and India", "Hello World and India"},
 		{"Sum of start and num larger than length", "Hello World", 7, 10, "India", "Hello India"},
 	}
 	var errCnt int
@@ -228,7 +230,7 @@ func TestReplace(t *testing.T) {
 		}
 	}
 	if errCnt > 0 {
-		t.Errorf("Failed %v cases", errCnt)
+		t.Errorf("Failed %v of %v test cases", errCnt, len(tt))
 	}
 }
 
@@ -253,7 +255,143 @@ func TestRept(t *testing.T) {
 		}
 	}
 	if errCnt > 0 {
-		t.Errorf("Failed %v cases", errCnt)
+		t.Errorf("Failed %v of %v test cases", errCnt, len(tt))
+	}
+}
+
+func TestRight(t *testing.T) {
+	tt := []struct {
+		name  string
+		inStr string
+		inNum int
+		out   string
+	}{
+		{"Happy Case 1", "Hello World", 5, "World"},
+		{"Happy Case 2", "Hello World", 0, ""},
+		{"Num is equal to string length", "Hello World", 11, "Hello World"},
+		{"Num greater than string length", "Hello World", 16, "Hello World"},
+	}
+	var errCnt int
+	for _, tu := range tt {
+		s := Right(tu.inStr, tu.inNum)
+		if strings.Compare(s, tu.out) != 0 {
+			t.Logf("Test Name: %v, Expected: %v, Got: %v", tu.name, tu.out, s)
+			errCnt++
+		}
+	}
+	if errCnt > 0 {
+		t.Errorf("Failed %v of %v test cases", errCnt, len(tt))
+	}
+}
+
+func TestSearch(t *testing.T) {
+	tt := []struct {
+		testName string
+		iFnd     string
+		iSrch    string
+		iPos     int
+		out      int
+	}{
+		{"String Found: Same Case", "B", "ABCDEFGH", 1, 2},
+		{"String Not Found: Same Case", "Z", "ABCDEFGH", 1, -1},
+		{"Sub-String Found: Same Case", "CDE", "ABCDEFGH", 1, 3},
+		{"Sub-String Not Found: Same Case", "GHI", "ABCDEFGH", 1, -1},
+		{"String found in starting pos: Same Case", "CDE", "ABCDEFGH", 3, 3},
+		{"String not found in starting pos: Same Case", "CDE", "ABCDEFGH", 4, -1},
+		{"String Found: Different Case", "b", "ABCDEFGH", 1, 2},
+		{"String Not Found: Different Case", "z", "ABCDEFGH", 1, -1},
+		{"Sub-String Found: Different Case", "cde", "ABCDEFGH", 1, 3},
+		{"Sub-String Not Found: Different Case", "ghi", "ABCDEFGH", 1, -1},
+		{"String found in starting pos: Different Case", "cDe", "ABCDEFGH", 3, 3},
+		{"String not found in starting pos: Different Case", "Cde", "ABCDEFGH", 8, -1},
+	}
+	var errCnt int
+	for _, tu := range tt {
+		oPos := Search(tu.iFnd, tu.iSrch, tu.iPos)
+		if oPos != tu.out {
+			t.Logf("Test Name: %v, Expected: %v, Got: %v", tu.testName, tu.out, oPos)
+			errCnt++
+		}
+	}
+	if errCnt > 0 {
+		t.Errorf("Failed %v of %v test cases", errCnt, len(tt))
+	}
+}
+
+func TestSubstitute(t *testing.T) {
+	tt := []struct {
+		name   string
+		inSrc  string
+		inOld  string
+		inNew  string
+		inInst int
+		out    string
+	}{
+		{"Happy Case", "a,b,c,d,e", ",", "|", 0, "a|b|c|d|e"},
+		{"Specific Instance in limit", "a,b,c,d,e", ",", "|", 3, "a,b,c|d,e"},
+		{"Specific Instance when found at start", ",a,b,c,d,e", ",", "|", 3, ",a,b|c,d,e"},
+		{"Specific Instance when out of limit", ",a,b,c,d,e", ",", "|", 7, ",a,b,c,d,e"},
+		{"Substring: Happy Case", "Hello abcWorldabc and abcIndia", "abc", "", 0, "Hello World and India"},
+		{"Substring: Specific Instance in limit", "Hello abcWorldabc and abcIndia", "abc", "", 2, "Hello abcWorld and abcIndia"},
+		{"Substring: Specific Instance when found at start", "abcHello abcWorldabc and abcIndia", "abc", "", 3, "abcHello abcWorld and abcIndia"},
+		{"Substring: Specific Instance when out of limit", "Hello abcWorldabc and abcIndia", "abc", "", 7, "Hello abcWorldabc and abcIndia"},
+	}
+	var errCnt int
+	for _, tu := range tt {
+		s := Substitute(tu.inSrc, tu.inOld, tu.inNew, tu.inInst)
+		if strings.Compare(s, tu.out) != 0 {
+			t.Logf("Test Name: %v, Expected: %v, Got: %v", tu.name, tu.out, s)
+			errCnt++
+		}
+	}
+	if errCnt > 0 {
+		t.Errorf("Failed %v of %v test cases", errCnt, len(tt))
+	}
+}
+
+func TestTrim(t *testing.T) {
+	tt := []struct {
+		name string
+		in   string
+		out  string
+	}{
+		{"Happy case", "  Hello World  ", "Hello World"},
+		{"Excess space in sentence", "  Hello	   World  ", "Hello World"},
+		{"Tabs in beginning", "	  Hello World	  ", "Hello World"},
+	}
+	var errCnt int
+	for _, tu := range tt {
+		s := Trim(tu.in)
+		if strings.Compare(s, tu.out) != 0 {
+			t.Logf("Test Name: %v, Expected: %v, Got: %v", tu.name, tu.out, s)
+			errCnt++
+		}
+	}
+	if errCnt > 0 {
+		t.Errorf("Failed %v of %v test cases", errCnt, len(tt))
+	}
+}
+
+func TestUpper(t *testing.T) {
+	tt := []struct {
+		name string
+		in   string
+		out  string
+	}{
+		{"Null string", "", ""},
+		{"All Lowercase", "abcdef", "ABCDEF"},
+		{"Mixed Case", "ABcdEF", "ABCDEF"},
+	}
+	var errCnt int
+	for _, tu := range tt {
+		s := Upper(tu.in)
+		if strings.Compare(s, tu.out) != 0 {
+			t.Logf("Test Name: %v, Expected: %v, Got: %v", tu.name, tu.out, s)
+			errCnt++
+		}
+	}
+	if errCnt > 0 {
+		t.Errorf("Failed %v of %v test cases", errCnt, len(tt))
 	}
 }
 
