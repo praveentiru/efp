@@ -15,26 +15,16 @@
 package efp
 
 import (
-	"fmt"
-	"reflect"
-	"strconv"
 	"strings"
 	"text/scanner"
 	"unicode"
 )
 
 // Concat implement Excel's CONCAT function
-func Concat(args ...interface{}) string {
+func Concat(args ...string) string {
 	var b strings.Builder
 	for _, v := range args {
-		switch v := reflect.ValueOf(v); v.Kind() {
-		case reflect.String:
-			b.WriteString(v.String())
-		case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
-			b.WriteString(strconv.FormatInt(v.Int(), 10))
-		case reflect.Float32, reflect.Float64:
-			b.WriteString(fmt.Sprint(v.Float()))
-		}
+		b.WriteString(v)
 	}
 	return b.String()
 }
@@ -195,17 +185,12 @@ func Substitute(src, old, new string, inst int) string {
 // Trim implements Excel's TRIM function
 func Trim(s string) string {
 	s = strings.TrimSpace(s)
-	type scanState int
-	const (
-		inSpace scanState = iota
-		outSpace
-	)
 	var sc scanner.Scanner
 	var sb strings.Builder
 	sc.Init(strings.NewReader(s))
 	for tok := sc.Scan(); tok != scanner.EOF; tok = sc.Scan() {
-		str := fmt.Sprint(sc.TokenText(), " ")
-		sb.WriteString(str)
+		sb.WriteString(sc.TokenText())
+		sb.WriteString(" ")
 	}
 	return strings.TrimSpace(sb.String())
 }

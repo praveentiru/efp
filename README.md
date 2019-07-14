@@ -15,7 +15,7 @@ Go version - 1.12 and above
 
 1. Drop 1:
     * Support for all Logical functions
-    * Support for all text functions
+    * ~~Support for all text functions~~
 2. Drop 2:
     * Support for building a range
     * Support for Math & Trig with exception of array functions
