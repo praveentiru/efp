@@ -9,8 +9,7 @@ import (
 	"github.com/praveentiru/efp"
 )
 
-// TODO: Add failure cases to ensure that parser throws errors when parameters are incorrect
-// TODO: Add test cases for nested function calls
+// TODO: Add test cases where parsing fails
 func TestParse(t *testing.T) {
 	tt := []struct {
 		name string
@@ -23,7 +22,6 @@ func TestParse(t *testing.T) {
 		{"EXACT function", `EXACT("Hello", "Hello")`, true},
 		{"FIND function with start position", `FIND("l", "Hello", 2)`, 3.0},
 		{"FIND function without start position", `FIND("l", "Hello")`, 3.0},
-		{"FIND function in lower case", `FIND("l", "Hello")`, 3.0},
 		{"LEFT with string and no num chars", `LEFT("Hello World")`, "H"},
 		{"LEFT with string and with num chars", `LEFT("Hello World", 5)`, "Hello"},
 		{"LEFT with number input in place of text", `LEFT(3.1416, 3)`, "3.1"},
@@ -64,7 +62,6 @@ func TestEvaluate(t *testing.T) {
 		{"EXACT function", `EXACT("Hello", "Hello")`, true},
 		{"FIND function with start position", `FIND("l", "Hello", 2)`, 3.0},
 		{"FIND function without start position", `FIND("l", "Hello")`, 3.0},
-		{"FIND function in lower case", `FIND("l", "Hello")`, 3.0},
 		{"LEFT with string and no num chars", `LEFT("Hello World")`, "H"},
 		{"LEFT with string and with num chars", `LEFT("Hello World", 5)`, "Hello"},
 		{"LEFT with number input in place of text", `LEFT(3.1416, 3)`, "3.1"},
@@ -95,23 +92,67 @@ func TestEvaluate(t *testing.T) {
 		}
 		switch v := reflect.ValueOf(tu.out); v.Kind() {
 		case reflect.String:
-			str, _ := eval.EvalString(context.Background(), nil)
+			str, err := eval.EvalString(context.Background(), nil)
+			if err != nil {
+				t.Logf("Test Case: %v, EvalString returned error, Error: %v", tu.name, err.Error())
+				errCnt++
+			}
 			if strings.Compare(str, v.String()) != 0 {
 				t.Logf("Test Case: %v, Expected: %v, Got: %v", tu.name, tu.out, str)
 				errCnt++
 			}
 		case reflect.Float64:
-			fl, _ := eval.EvalFloat64(context.Background(), nil)
+			fl, err := eval.EvalFloat64(context.Background(), nil)
+			if err != nil {
+				t.Logf("Test Case: %v, EvalFloat returned error, Error: %v", tu.name, err.Error())
+				errCnt++
+			}
 			if int(fl) != int(v.Float()) {
 				t.Logf("Test Case: %v, Expected: %v, Got: %v", tu.name, tu.out, fl)
 				errCnt++
 			}
 		case reflect.Bool:
-			b, _ := eval.EvalBool(context.Background(), nil)
+			b, err := eval.EvalBool(context.Background(), nil)
+			if err != nil {
+				t.Logf("Test Case: %v, EvalBool returned error, Error: %v", tu.name, err.Error())
+				errCnt++
+			}
 			if b != v.Bool() {
 				t.Logf("Test Case: %v, Expected: %v, Got: %v", tu.name, tu.out, b)
 				errCnt++
 			}
+		}
+	}
+	if errCnt > 0 {
+		t.Errorf("Failed %v of %v cases", errCnt, len(tt))
+	}
+}
+
+func TestNestedStringFunc(t *testing.T) {
+	tt := []struct {
+		name string
+		exp  string
+		out  string
+	}{
+		{"CONCAT with LEFT, MID and RIGHT", `SUBSTITUTE(CONCATENATE(LEFT("Hello World", 5),MID("Hello World", 6, 1),RIGHT("Hello World", 5)), "World", "India")`, "Hello India"},
+	}
+	var errCnt int
+	for _, tu := range tt {
+		eval, err := efp.Parse(strings.NewReader(tu.exp))
+		if err != nil {
+			t.Logf("Test Case: %v, Expression parse failed, Error: %v", tu.name, err.Error())
+			errCnt++
+			continue
+		}
+		s, err := eval.EvalString(context.Background(), nil)
+		if err != nil {
+			t.Logf("Test Case: %v, Expression evaluation failed, Error: %v", tu.name, err.Error())
+			errCnt++
+			continue
+		}
+		if strings.Compare(s, tu.out) != 0 {
+			t.Logf("Test Case: %v, Expected: %v, Got: %v", tu.name, tu.out, s)
+			errCnt++
 		}
 	}
 	if errCnt > 0 {
