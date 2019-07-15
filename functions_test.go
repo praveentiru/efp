@@ -8,12 +8,12 @@ import (
 )
 
 func TestConcat(t *testing.T) {
-	testCase1 := []interface{}{"Hello ", "World"}
-	testCase2 := []interface{}{"Hello World ", 1984}
-	testCase3 := []interface{}{"Hello Pi - ", 3.1416}
+	testCase1 := []string{"Hello ", "World"}
+	testCase2 := []string{"Hello World ", "1984"}
+	testCase3 := []string{"Hello Pi - ", "3.1416"}
 	tt := []struct {
 		testName string
-		in       []interface{}
+		in       []string
 		out      string
 	}{
 		{"Strings only", testCase1, "Hello World"},
