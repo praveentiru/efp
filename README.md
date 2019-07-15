@@ -1,6 +1,6 @@
 # efp
 
-![Project Build Status](https://travis-ci.com/praveentiru/efp.svg?branch=master)
+![Project Build Status](https://travis-ci.com/praveentiru/efp.svg?branch=master)[![Go Report Card](https://goreportcard.com/badge/github.com/praveentiru/efp)](https://goreportcard.com/report/github.com/praveentiru/efp)
 
 There are lot of people who use excel in their day to day operations. They are well versed with excel formulas. Having support for excel formulas in a software system would be of great value of end users. Some target groups:
 
