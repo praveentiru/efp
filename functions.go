@@ -21,7 +21,7 @@ import (
 )
 
 // Concat implement Excel's CONCAT function
-func Concat(args ...string) string {
+func concat(args ...string) string {
 	var b strings.Builder
 	for _, v := range args {
 		b.WriteString(v)
