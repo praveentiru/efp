@@ -23,6 +23,7 @@ import (
 )
 
 var excelLanguage = gval.NewLanguage(
+	excelLogical,
 	excelText,
 	gval.Base(),
 )
@@ -33,14 +34,14 @@ var excelText = gval.NewLanguage(
 		for _, arg := range args {
 			str = append(str, toString(arg))
 		}
-		return Concat(str...)
+		return concat(str...)
 	}),
 	gval.Function("CONCATENATE", func(args ...interface{}) string {
 		str := make([]string, 0)
 		for _, arg := range args {
 			str = append(str, toString(arg))
 		}
-		return Concat(str...)
+		return concat(str...)
 	}),
 	gval.Function("EXACT", func(a, b interface{}) bool {
 		aStr := toString(a)
@@ -123,6 +124,47 @@ var excelText = gval.NewLanguage(
 	gval.Function("UPPER", func(s interface{}) string {
 		str := toString(s)
 		return Upper(str)
+	}),
+)
+
+// TODO: Implement XOR
+var excelLogical = gval.NewLanguage(
+	gval.InfixTextOperator("=", func(a, b string) (interface{}, error) {
+		if strings.Compare(a, b) != 0 {
+			return false, nil
+		}
+		return true, nil
+	}),
+	gval.Function("IF", func(cond bool, valTrue, valFalse string) string {
+		if !cond {
+			return valFalse
+		}
+		return valTrue
+	}),
+	gval.Function("AND", func(args ...bool) bool {
+		for _, arg := range args {
+			if !arg {
+				return false
+			}
+		}
+		return true
+	}),
+	gval.Function("OR", func(args ...bool) bool {
+		for _, arg := range args {
+			if arg {
+				return true
+			}
+		}
+		return false
+	}),
+	gval.Function("FALSE", func() bool {
+		return false
+	}),
+	gval.Function("NOT", func(a bool) bool {
+		return !a
+	}),
+	gval.Function("TRUE", func() bool {
+		return true
 	}),
 )
 

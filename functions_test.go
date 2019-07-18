@@ -3,8 +3,6 @@ package efp
 import (
 	"strings"
 	"testing"
-
-	"github.com/PaesslerAG/gval"
 )
 
 func TestConcat(t *testing.T) {
@@ -22,7 +20,7 @@ func TestConcat(t *testing.T) {
 	}
 	var errCnt int
 	for _, tu := range tt {
-		s := Concat(tu.in...)
+		s := concat(tu.in...)
 		if strings.Compare(s, tu.out) != 0 {
 			t.Logf("Test: %s, Expected: %s, Got: %s", tu.testName, tu.out, s)
 			errCnt++
@@ -393,31 +391,4 @@ func TestUpper(t *testing.T) {
 	if errCnt > 0 {
 		t.Errorf("Failed %v of %v test cases", errCnt, len(tt))
 	}
-}
-
-func TestLanguage(t *testing.T) {
-	f1 := gval.Function("CONCAT", Concat)
-	f2 := gval.Function("LEFT", func(s string, num float64) string {
-		return Left(s, int(num))
-	})
-	f3 := gval.Function("MID", func(s string, str, num float64) string {
-		return Mid(s, int(str), int(num))
-	})
-	langs := []gval.Language{f1, f2, f3}
-	// vars := map[string]interface{}{
-	// 	"name":  "Hello",
-	// 	"value": "World",
-	// 	"type":  "Leaf"}
-	val, err := gval.Evaluate(`CONCAT(LEFT("ABCD",2),MID("ABCD",3,2))`, nil, langs...)
-	// val, err := gval.Evaluate(`LEFT("ABCD",2)`, nil, langs...)
-	if err != nil {
-		t.Errorf(err.Error())
-		return
-	}
-	if strings.Compare(val.(string), "ABCD") != 0 {
-		t.Errorf("Expected ABCD Got %v", val.(string))
-	}
-	// if strings.Compare(val.(string), "SuspensionRearLeaf") != 0 {
-	// 	t.Errorf("Expected SuspensionRearLeaf got %s", val)
-	// }
 }
