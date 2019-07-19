@@ -16,7 +16,7 @@ Go version - 1.12 and above
 ## Roadmap
 
 1. Drop 1:
-    * Support for all Logical functions
+    * ~~Support for all Logical functions~~
     * ~~Support for all text functions~~
 2. Drop 2:
     * Support for building a range
